@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  mysql:
+    container_name: efcore-complextypes-mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password
+
+  test:
+    container_name: efcore-complextypes-test
+    build:
+      context: .
+      dockerfile: docker-dotnet.dockerfile
+    environment:
+      DOTNET_ENVIRONMENT: Test
+    entrypoint: /bin/bash ./wait-for-it.sh -t 60 mysql:5159 -- /usr/bin/dotnet test --filter Category=${DOTNET_TEST_CATEGORY:-*}
+    depends_on:
+      - mysql
