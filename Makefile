@@ -17,6 +17,21 @@ commit: commit-only
 down:
 	docker compose down
 
+ef-install:
+	dotnet tool update dotnet-ef --prerelease
+
+ef-add:
+	dotnet ef migrations add "$(migration)" --context Database.DatabaseContext --project Database --startup-project Tests
+
+image:
+	docker build --build-arg PROJECT=$(service) -f $(service)/Dockerfile -t $(service) .
+
+image-run:
+	docker run --name $(service) -it --rm --entrypoint $(command) $(service)
+
+image-sh:
+	docker exec -it $(service) sh
+
 lint:
 	dotnet format --verify-no-changes --exclude Tests **/Migrations --verbosity quiet
 
@@ -35,7 +50,7 @@ test-coverage: clean build test
 test-all:
 	docker compose build -q
 	docker compose pull -q
-	docker compose run --env DOTNET_TEST_CATEGORY=* --rm test
+	docker compose run --env DOTNET_TEST_FILTER="Category!=Ignored" --rm test
 
 up:
 	docker compose build $(service)

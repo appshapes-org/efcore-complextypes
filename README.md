@@ -9,17 +9,21 @@ implementing Complex Types in EF Core 8.
 
 # What is here?
 
+## Database
+
+The `Database` project contains a DbContext and migrations for this example repository.
+
 ## Domain
 
 The `Domain` project contains entities for this example repository.
 
 ## Tests
 
-The `Tests` project contains unit and service tests for this example repository. Service tests depend on MySQL running.
+The `Tests` project contains unit and service tests for this example repository, as well as files required to run migrations. Service tests depend on PostgreSQL running.
 
 ## Docker Compose
 
-`docker-compose.yml` contains a MySQL definition, as well as a Tests definition.
+`docker-compose.yml` contains a PostgreSQL definition, as well as a Tests definition.
 
 # What are the dependencies?
 
