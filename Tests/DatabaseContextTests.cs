@@ -19,24 +19,23 @@ public class DatabaseContextTests : ServiceTestsBase
             PostalCode = "02123",
             Country = "USA"
         };
-        Customer customer = context.Customers.Add(new Customer
-        {
-            Name = "Acme",
-            Address = address
-        }).Entity;
         Order order = context.Orders.Add(new Order
         {
-            Customer = customer,
+            Customer = new Customer
+            {
+                Name = "Acme",
+                Address = address
+            },
             Contents = "Marbles",
             BillingAddress = address,
             ShippingAddress = address
         }).Entity;
         Assert.Equal(2, await context.SaveChangesAsync());
-        Customer savedCustomer = await context.Customers
-            .SingleAsync(x => x.Id == customer.Id);
-        Order savedOrder = await context.Orders
-            .SingleAsync(x => x.Id == order.Id);
-        Assert.Equal(address, savedCustomer.Address);
+        Customer customer = await context.Customers
+            .Include(x => x.Orders)
+            .SingleAsync(x => x.Id == order.Customer.Id);
+        Order savedOrder = customer.Orders.First();
+        Assert.Equal(address, customer.Address);
         Assert.Equal(address, savedOrder.BillingAddress);
         Assert.Equal(address, savedOrder.ShippingAddress);
     }
