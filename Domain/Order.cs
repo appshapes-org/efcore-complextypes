@@ -8,7 +8,7 @@ public class Order
 
     public Customer Customer { get; set; } = null!;
 
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public required Address ShippingAddress { get; set; }
 }
